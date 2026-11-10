@@ -3,7 +3,12 @@ guid: 170ebbda57fb1114a8d2187f06c9bbad
 ModelImporter:
   serializedVersion: 24600
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: BAK01_SlicedBread_initialShadingGroup1
+    second: {fileID: 2100000, guid: 33b906a801b66b74db7c4752c12ae2da, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
