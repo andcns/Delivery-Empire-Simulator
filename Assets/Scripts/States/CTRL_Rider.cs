@@ -126,8 +126,6 @@ public class CTRL_Rider : MonoBehaviour
 
         returnPosition = hit.position;
 
-        Debug.Log($"CTRL_Rider: Placed on NavMesh at {hit.position}");
-
         return true;
     }
 
@@ -272,23 +270,42 @@ public class CTRL_Rider : MonoBehaviour
 
     private void WarpTo(Vector3 destination)
     {
-        Vector3 target = destination;
-
-        if (NavMesh.SamplePosition(destination, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+        if (!NavMesh.SamplePosition(
+            destination,
+            out NavMeshHit hit,
+            2f,
+            NavMesh.AllAreas))
         {
-            target = hit.position;
+            Debug.LogWarning(
+                $"CTRL_Rider: Could not find NavMesh near destination {destination}. Moving rider directly to target."
+            );
+
+            transform.position = destination;
+            return;
         }
 
         if (riderNavMeshAgent != null &&
             riderNavMeshAgent.enabled &&
             riderNavMeshAgent.isOnNavMesh)
         {
-            riderNavMeshAgent.Warp(target);
+            bool warped = riderNavMeshAgent.Warp(hit.position);
+
+            if (!warped)
+            {
+                Debug.LogWarning(
+                    $"CTRL_Rider: Warp failed for {name} at {hit.position}. Moving rider directly to target."
+                );
+
+                transform.position = destination;
+                return;
+            }
+
             riderNavMeshAgent.ResetPath();
+            riderNavMeshAgent.isStopped = true;
         }
         else
         {
-            transform.position = target;
+            transform.position = hit.position;
         }
     }
 
